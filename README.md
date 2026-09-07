@@ -20,7 +20,7 @@ Software stack:
 * **NuttX RTOS**
 * **LVGL 9**
 * **Lua** — used by watchfaces
-* **AiotJS / QuickJS** — used by native Xiaomi applications
+* **AiotJS / QuickJS** — used by Xiaomi 3rd party applications
 
 Unfortunately, Global firmware removes the AiotJS engine instead of providing native applications for the international market. This project explores another approach: loading our own native applications as NuttX modules.
 
