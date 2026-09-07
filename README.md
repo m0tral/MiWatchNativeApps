@@ -46,7 +46,7 @@ This has several advantages:
 * Fast development and testing
 * Modules can be loaded and unloaded independently
 * Much faster iteration than reflashing the application firmware
-* Significantly lower risk during development
+* Significantly lower risk during development, it's protected from bootloop, as system doesn't load it automatically
 
 NuttX supports both **ELF** and **NXFLAT** modules. For this project, **ET_REL relocatable ELF** modules are used because they provide a relatively simple build pipeline.
 
