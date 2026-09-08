@@ -35,6 +35,22 @@ __attribute__((unused)) static size_t strnlen(const char *s, size_t max)
     return n;
 }
 
+/* strcmp / strncmp -- ascii compare. Returns the sign of the first
+ * differing byte (a la newlib). Local replacement so modules don't need
+ * to pull <string.h>. */
+__attribute__((unused)) static int strcmp(const char *a, const char *b)
+{
+    while (*a && *a == *b) { a++; b++; }
+    return (int)(unsigned char)*a - (int)(unsigned char)*b;
+}
+
+__attribute__((unused)) static int strncmp(const char *a, const char *b, size_t n)
+{
+    while (n && *a && *a == *b) { a++; b++; n--; }
+    if (n == 0) return 0;
+    return (int)(unsigned char)*a - (int)(unsigned char)*b;
+}
+
 /* atoi -- ASCII-to-int, leading whitespace skipped, optional +/- sign,
  * stops at first non-digit. Returns 0 on overflow. Local replacement for
  * newlib's <stdlib.h> atoi so the module doesn't need to pull stdlib. */

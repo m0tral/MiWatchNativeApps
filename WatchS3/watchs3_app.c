@@ -9,10 +9,10 @@
 #include <stdint.h>
 #include "common/misc/mem.h"
 #include "common/nuttx/syslog.h"
-#include "watchs3_app_asserts.h"
 #include "common/miwear/app.h"
 #include "common/miwear/watchface.h"
 #include "common/lvgl/control.h"
+#include "watchs3_app_asserts.h"
 #include "ui/calc_page.h"
 
 #define LOG_TAG        "[module_app]"
@@ -23,7 +23,7 @@
 #define APP_NAME       APP_TAG
 #define PAGE_NAME      "main"
 
-__attribute__((used)) static void *post_timer_id;
+static void *post_timer_id;
 
 /* ---- Calculator app descriptor ------------------------------------------- */
 static char *calc_app_get_name(void)
@@ -116,6 +116,13 @@ static miwear_page_t g_calc_page = {
     .get_scroll_obj      = 0,
 };
 
+static inline void launcher_add_app()
+{
+    lv_ll_clear(g_appinfo_list);
+    launcher_data_load_app_info();
+    launcher_page_main_update_layout();
+}
+
 static void register_app(void)
 {
     if (app_lookup(CALC_APP_ID) == 0) {
@@ -125,14 +132,14 @@ static void register_app(void)
         int res = g_packagemanager_api->install(&g_calc_app, pages, 1);
         syslog(LOG_WARN, "%s pm_app_install(%s) rc=%d\n",
             LOG_TAG, g_calc_app.name, res);
-
+        
         /* Add the app icon to the launcher grid.
-        Watch S3 has no quick app engine, so behavior is different
-         */
-        lv_ll_clear(g_appinfo_list);
-        launcher_data_load_app_info();
-        launcher_page_main_update_layout();
-        syslog(LOG_WARN, "%s launcher_apps_layout_update", LOG_TAG);
+            Watch S3 GL has no quick app engine,
+            so need use other way
+        */
+        launcher_add_app();
+
+        syslog(LOG_WARN, "%s added app to launcher layout", LOG_TAG);
 
         if (res == 0) {
             char *curr_face = g_watchface_config && g_watchface_config->current_face
@@ -140,14 +147,18 @@ static void register_app(void)
                             : "";
 
             syslog(LOG_WARN, "%s curr face: %s", LOG_TAG, curr_face);
-            watchface_manager_delete_watchface(curr_face);
-            watchface_manager_reset_watchface(NULL);
+            if (curr_face && *curr_face) {
+                watchface_manager_delete_watchface(curr_face);
+                watchface_manager_reset_watchface(NULL);
+
+                syslog(LOG_WARN, "%s watchface cleaned", LOG_TAG);
+            }
 
             lvx_notification_insert_message(&done_notification);
         }
     }
     else {
-        syslog(LOG_WARN, "%s add already exists", LOG_TAG);
+        syslog(LOG_WARN, "%s app already exists", LOG_TAG);
     }
 }
 

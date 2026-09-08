@@ -15,30 +15,18 @@
  * platform/miwear_system.h picks the right per-version file).
  *
  * --------------------------------------------------------------------------
- * Layout of watchface_config_t (heap-allocated, calloc(120, 1) in
- * watchface_config_init):
+ * watchface_config_t is model-specific and lives in:
+ *   - platform/watchs3/watchface_layout.h  (v1)
+ *   - platform/mb10p/watchface_layout.h    (v2)
  *
- *   +0x00..0x3F  char    fw_version[64]       (common -- WatchS3 + mb10p)
- *   +0x40        int32_t sorted               (common)
- *   +0x44        int32_t state                (common)
- *   +0x48        watchface_entry_t *current  (common)
- *   +0x4C        watchface_entry_t *default  (common)
+ * The two layouts diverge on the active-watchface slot offset:
+ *   - WatchS3 family (verified fw_2.6.0 + fw_4.8.0): current_face at +0x44
+ *   - mb10p family:                                current_face at +0x48
  *
- *   +0x50..0x6F  -- 32 bytes, MODEL-SPECIFIC --
- *                WatchS3 leaves these as opaque zero-initialized scratch;
- *                mb10p uses them for per-firmware time-delta tracking
- *                fields reverse-engineered via IDA. Consumers that need
- *                to read this region must cast through
- *                `watchface_config_mb10p_overlay_t` (defined below -- it
- *                is byte-compatible with the mb10p firmware's view of
- *                the same 32 bytes).
- *
- *   +0x70        watchface_entry_t *head    (common -- doubly-linked list)
- *   +0x74        watchface_entry_t *tail    (common)
- *
- *   Total size 120 bytes. ABI is verified via _Static_assert(offsetof(...))
- *   on each public field so any future restructure that breaks the
- *   firmware contract fails the build.
+ * The layout header that gets pulled in by the platform family dispatcher
+ * (`platform/<model>/miwear_system.h`) `#define`s `watchface_config_t`
+ * to the right per-model `watchface_config_vN_t`, so this file only needs
+ * a forward declaration.
  * --------------------------------------------------------------------------
  */
 
@@ -143,15 +131,14 @@ _Static_assert(sizeof(watchface_entry_t) == 200,
 
 /* ---------------------------------------------------------------------------
  * Per-model overlay for the 32-byte model-specific mid region of
- * watchface_config_t (offsets 0x50..0x6F).
+ * watchface_config_t (offsets 0x50..0x6F). Only valid on mb10p / mb10pro;
+ * WatchS3 family never touches those offsets, so the equivalent accessor
+ * there is just `&g_watchface_config->reserved_4C[4]` (see
+ * platform/watchs3/watchface_layout.h).
  *
- * Use as:
+ * Use on mb10p:
  *     watchface_config_mb10p_overlay_t *ov =
  *         (watchface_config_mb10p_overlay_t *)&g_watchface_config->mid;
- *
- * Only valid on mb10p / mb10pro firmware. WatchS3 firmware does not touch
- * these offsets -- see watchface_config_t::mid (below) for the unified
- * 32-byte reserved scratch region.
  * --------------------------------------------------------------------------- */
 typedef struct watchface_config_mb10p_overlay_s {
     uint64_t             ts_start_a;     /* 0x50 -- start timestamp, type-A */
@@ -177,87 +164,15 @@ _Static_assert(offsetof(watchface_config_mb10p_overlay_t, flags_0x6D) == 0x1D,
                "offset 0x1D of the overlay (= +0x6D of watchface_config_t)");
 
 /* ---------------------------------------------------------------------------
- * Top-level watchface manager state. Heap-allocated (calloc(120, 1)) inside
- * watchface_config_init() so its address is the runtime pointer stored in
- * SRAM at g_watchface_config.
+ * Top-level watchface manager state. The actual layout is model-specific
+ * (see platform/<model>/watchface_layout.h); `watchface_config_t` is NOT
+ * defined here. It is created by the matching layout header, which the
+ * platform family dispatcher (`platform/<model>/miwear_system.h`) pulls
+ * in before any per-fw miwear_system.h binds `g_watchface_config`.
  *
- * Layout (reverse-engineered from vela_ap.bin fw_4.8.0, function
- * watchface_config_init at 0x2CA7CCC8 + set_use_watchface at 0x2CA7C67C):
- *
- *   0x00  char    fw_version[64]         -- last successfully-loaded fw
- *                                        -- version string; gates the
- *                                        -- reload-on-bump path
- *   0x40  int32_t sorted                 -- 0 = order_list not yet sorted,
- *                                        -- 1 = already sorted + persisted
- *   0x44  int32_t state                  -- ordering / reload state flag
- *   0x48  watchface_entry_t *current_face_id
- *                                      -- pointer to the currently-active
- *                                        -- watchface_entry_t; updated by
- *                                        -- watchface_config_set_use_watchface()
- *                                        -- when the chosen entry has a
- *                                        -- builtin (non-market) type
- *   0x4C  watchface_entry_t *default_face_id
- *                                      -- pointer to the fallback/default
- *                                        -- watchface_entry_t; updated when
- *                                        -- the chosen entry is of type 2
- *                                        -- (market)
- *   0x50..0x6F  mid[32]                 -- model-specific region (see
- *                                        -- watchface_config_mb10p_overlay_t
- *                                        -- for the mb10p layout; WatchS3
- *                                        -- leaves it as opaque scratch).
- *   0x70  watchface_entry_t *head        -- doubly-linked list sentinel
- *                                        -- (next/prev are in-place at 0x00/0x04
- *                                        -- of this slot when the list is empty)
- *   0x74  watchface_entry_t *tail        -- doubly-linked list sentinel
- *                                        -- == head slot when the list is
- *                                        -- empty; otherwise the LAST entry's
- *                                        -- address. Used as the BACKWARD
- *                                        -- search starting point in
- *                                        -- watchface_config_set_use_watchface;
- *                                        -- NOT the current watchface.
- *
- * Total size 120 bytes (0x78). Note: the current/default pointers are
- * 4-byte entry-pointers (the firmware does *(_DWORD *) = ptr twice --
- * once at +0x48 and once at +0x4C), NOT a single QWORD. The 8-byte
- * zero at init (`*(_QWORD *)(base + 0x48) = 0`) is just bulk-clear of
- * both 4-byte slots.
+ * Consumers that include this header directly must go through
+ * platform/miwear_system.h to get the proper model-specific definition.
  * --------------------------------------------------------------------------- */
-typedef struct watchface_config_s {
-    /* 0x00..0x4F: model-invariant header (WatchS3 + mb10p) */
-    char                 fw_version[64];   /* 0x00 */
-    int32_t              sorted;            /* 0x40 */
-    int32_t              state;             /* 0x44 */
-    watchface_entry_t   *current_face;      /* 0x48 */
-    watchface_entry_t   *default_face;      /* 0x4C */
-
-    /* 0x50..0x6F: model-specific mid region (32 bytes).
-     * WatchS3: opaque zero-fill. mb10p: see watchface_config_mb10p_overlay_t. */
-    uint8_t              mid[32];           /* 0x50..0x6F */
-
-    /* 0x70..0x77: model-invariant trailer (WatchS3 + mb10p) */
-    watchface_entry_t   *head;              /* 0x70 */
-    watchface_entry_t   *tail;              /* 0x74 */
-} watchface_config_t;
-
-_Static_assert(sizeof(watchface_config_t) == 120,
-               "watchface_config_t must be 120 bytes to match the "
-               "firmware struct at g_watchface_config");
-_Static_assert(offsetof(watchface_config_t, fw_version)    == 0x00,
-               "watchface_config_t.fw_version must be at firmware +0x00");
-_Static_assert(offsetof(watchface_config_t, sorted)        == 0x40,
-               "watchface_config_t.sorted must be at firmware +0x40");
-_Static_assert(offsetof(watchface_config_t, current_face)  == 0x48,
-               "watchface_config_t.current_face must be at firmware +0x48");
-_Static_assert(offsetof(watchface_config_t, default_face)  == 0x4C,
-               "watchface_config_t.default_face must be at firmware +0x4C");
-_Static_assert(offsetof(watchface_config_t, mid)            == 0x50,
-               "watchface_config_t.mid must be at firmware +0x50");
-_Static_assert(sizeof(((watchface_config_t *)0)->mid)        == 32,
-               "watchface_config_t.mid must span firmware +0x50..+0x6F (32 bytes)");
-_Static_assert(offsetof(watchface_config_t, head)          == 0x70,
-               "watchface_config_t.head must be at firmware +0x70");
-_Static_assert(offsetof(watchface_config_t, tail)          == 0x74,
-               "watchface_config_t.tail must be at firmware +0x74");
 
 /* Delete a watchface by its launcher face_id.
  *

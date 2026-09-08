@@ -41,7 +41,7 @@
 #include "common/lvgl/timer.h"
 #include "common/lvgl/control.h"
 #include "common/miwear/app.h"
-#include "common/miwear/watchface.h" /* for watchface_config_t and watchface_manager_delete_watchface_t */
+#include "common/miwear/watchface.h" /* for watchface_manager_delete_watchface_t / watchface_manager_reset_watchface_t typedefs; watchface_config_t (v1) comes from platform/watchs3/watchface_layout.h via the family dispatcher */
 #include "common/misc/print.h" /* for the snprintf prototype */
 
 /* ============================================================================

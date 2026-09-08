@@ -4,7 +4,9 @@
 /* watchs3 (Xiaomi Watch S3) platform dispatcher.
  *
  * Included by the top-level platform/miwear_system.h when WATCHS3_FW_VERSION
- * is defined. Picks which per-revision header under fw_X.Y.Z/ to pull in.
+ * is defined. Pulls in the WatchS3-specific watchface_config_t layout
+ * (v1) BEFORE the per-fw header so the per-fw miwear_system.h can bind
+ * `g_watchface_config` against the right struct type.
  *
  * Build with -DWATCHS3_FW_VERSION=480 to target fw_4.8.0 (default)
  *      or -DWATCHS3_FW_VERSION=260 to target fw_2.6.0
@@ -19,6 +21,8 @@
  * firmware by creating a new directory under platform/watchs3/ and
  * extending the `#if` ladder below.
  */
+
+#include "platform/watchs3/watchface_layout.h"   /* watchface_config_v1_t */
 
 #if defined(WATCHS3_FW_VERSION) && (WATCHS3_FW_VERSION == 260)    /* 2_6_0 */
 #   include "fw_2.6.0/miwear_system.h"

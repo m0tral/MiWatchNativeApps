@@ -4,3 +4,4 @@
 /WatchS3/wf_native_hello/app/lua
 /WatchS3/wf_native_calculator/output
 /WatchS3/wf_native_calculator/app/lua/*.elf
+*.elf

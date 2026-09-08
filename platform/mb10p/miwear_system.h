@@ -4,7 +4,11 @@
 /* mb10pro (Xiaomi Mi Band 10 Pro) platform dispatcher.
  *
  * Included by the top-level platform/miwear_system.h when MB10P_FW_VERSION
- * is defined. Picks which per-revision header under fw_X.Y.Z/ to pull in.
+ * is defined. Pulls in the mb10p-specific watchface_config_t layout
+ * (v2) BEFORE the per-fw header so the per-fw miwear_system.h can bind
+ * `g_watchface_config` against the right struct type. Also defines
+ * MIWEAR_APP_USE_V2_T so common/miwear/app.h's v2 split is selected
+ * (mb10p's miwear_app_t / miwear_page_t are NOT a superset of WatchS3's).
  *
  * Build with -DMB10P_FW_VERSION=3101043 to target fw_3.101.043 (default)
  *      or -DMB10P_FW_VERSION=3201016 to target fw_3.201.016
@@ -19,6 +23,10 @@
  * firmware by creating a new directory under platform/mb10p/ and
  * extending the `#if` ladder below.
  */
+
+#define MIWEAR_APP_USE_V2_T   /* common/miwear/app.h: select miwear_app_v2_t (mb10p layout) */
+
+#include "platform/mb10p/watchface_layout.h"   /* watchface_config_v2_t */
 
 #if defined(MB10P_FW_VERSION) && (MB10P_FW_VERSION == 3201016)  /* 3_201_016 */
 #   include "fw_3.201.016/miwear_system.h"
