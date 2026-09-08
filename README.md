@@ -1,12 +1,12 @@
 # MiWatch Native Apps
 
-Native applications for Xiaomi SmartBand Pro devices based on **NuttX + LVGL**, using dynamically loaded ELF modules.
+Native applications for Xiaomi Watch devices based on **NuttX + LVGL**, using dynamically loaded ELF modules.
 
 This project demonstrates that it is possible to develop and run **native applications directly on Xiaomi's watch platform**, even on Global firmware where the original AiotJS application engine has been removed.
 
 ## Hardware
 
-The target platform is the latest SmartBand Pro generation:
+The target platform is the latest SmartBand 10 Pro:
 
 * **Bestechnic BES2700iMP**
 * ARM Cortex-M33
@@ -15,10 +15,18 @@ The target platform is the latest SmartBand Pro generation:
 * 16 MB PSRAM
 * 256/512 Mb external SPI NAND Flash
 
+and Watch S3
+* **Bestechnic BES2700BP**
+* ARM Cortex-M55 dual core
+* 16 MB internal SPI Flash
+* ~2.5 MB SRAM
+* 32 MB PSRAM
+* 4Gb external emmc
+
 Software stack:
 
 * **NuttX RTOS**
-* **LVGL 9**
+* **LVGL**
 * **Lua** — used by watchfaces
 * **AiotJS / QuickJS** — used by Xiaomi 3rd party applications
 
