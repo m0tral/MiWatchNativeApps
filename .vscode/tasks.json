@@ -12,7 +12,7 @@
                 "-ExecutionPolicy",
                 "Bypass",
                 "-File",
-                "${workspaceFolder}/mb10pro/platform/verify_no_eabi.ps1"
+                "${workspaceFolder}/platform/verify_no_eabi.ps1"
             ],
             "problemMatcher": []
         },
@@ -48,6 +48,7 @@
                 "-fdata-sections",
                 "-fno-function-sections",
                 "-Os",
+                "-I.",
                 "-Imb10pro",
                 "-DMB10P_FW_VERSION=3101043",
                 "-Wall",
@@ -109,6 +110,7 @@
                 "-fdata-sections",
                 "-fno-function-sections",
                 "-Os",
+                "-I.",
                 "-Imb10pro",
                 "-DMB10P_FW_VERSION=3101043",
                 "-Wall",
@@ -141,6 +143,7 @@
                 "-fdata-sections",
                 "-fno-function-sections",
                 "-Os",
+                "-I.",
                 "-Imb10pro",
                 "-DMB10P_FW_VERSION=3201016",
                 "-Wall",
@@ -205,6 +208,7 @@
                 "-fdata-sections",
                 "-fno-function-sections",
                 "-Os",
+                "-I.",
                 "-Imb10pro",
                 "-DMB10P_FW_VERSION=3101043",
                 "-Wall",
@@ -237,6 +241,7 @@
                 "-fdata-sections",
                 "-fno-function-sections",
                 "-Os",
+                "-I.",
                 "-Imb10pro",
                 "-DMB10P_FW_VERSION=3201016",
                 "-Wall",
@@ -309,6 +314,380 @@
                 "${workspaceFolder}/mb10p_app_3.201.016.elf",
                 "-Destination",
                 "C:\\Xiaomi\\watchfaces\\mb10pro\\native_calculator\\app\\lua",
+                "-Force"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build watchs3 hello | 4.8.0",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "compile watchs3 hello | 4.8.0",
+                "link watchs3 hello | 4.8.0",
+                "verify: no eabi imports",
+                "deploy watchs3 hello | 4.8.0"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "compile watchs3 hello | 4.8.0",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=soft",
+                "-ffreestanding",
+                "-fno-common",
+                "-fno-builtin",
+                "-nostdlib",
+                "-fno-jump-tables",
+                "-fno-stack-protector",
+                "-fno-unwind-tables",
+                "-fno-asynchronous-unwind-tables",
+                "-fdata-sections",
+                "-fno-function-sections",
+                "-Os",
+                "-I.",
+                "-Iwatchs3",
+                "-DWATCHS3_FW_VERSION=480",
+                "-Wall",
+                "-Wextra",
+                "-c",
+                "watchs3/watchs3_hello.c",
+                "-o",
+                "watchs3_hello.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "link watchs3 hello | 4.8.0",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=soft",
+                "-r",
+                "-T",
+                "watchs3/watchs3.ld",
+                "-o",
+                "watchs3_hello_4.8.0.elf",
+                "watchs3_hello.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy watchs3 hello | 4.8.0",
+            "type": "shell",
+            "command": "Copy-Item",
+            "args": [
+                "-Path",
+                "${workspaceFolder}/watchs3_hello_4.8.0.elf",
+                "-Destination",
+                "${workspaceFolder}/watchs3/wf_native_hello/app/lua",
+                "-Force"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build watchs3 hello | 2.6.0",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "compile watchs3 hello | 2.6.0",
+                "link watchs3 hello | 2.6.0",
+                "verify: no eabi imports",
+                "deploy watchs3 hello | 2.6.0"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "compile watchs3 hello | 2.6.0",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=soft",
+                "-ffreestanding",
+                "-fno-common",
+                "-fno-builtin",
+                "-nostdlib",
+                "-fno-jump-tables",
+                "-fno-stack-protector",
+                "-fno-unwind-tables",
+                "-fno-asynchronous-unwind-tables",
+                "-fdata-sections",
+                "-fno-function-sections",
+                "-Os",
+                "-I.",
+                "-Iwatchs3",
+                "-DWATCHS3_FW_VERSION=260",
+                "-Wall",
+                "-Wextra",
+                "-c",
+                "watchs3/watchs3_hello.c",
+                "-o",
+                "watchs3_hello.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "link watchs3 hello | 2.6.0",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=soft",
+                "-r",
+                "-T",
+                "watchs3/watchs3.ld",
+                "-o",
+                "watchs3_hello_2.6.0.elf",
+                "watchs3_hello.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy watchs3 hello | 2.6.0",
+            "type": "shell",
+            "command": "Copy-Item",
+            "args": [
+                "-Path",
+                "${workspaceFolder}/watchs3_hello_2.6.0.elf",
+                "-Destination",
+                "${workspaceFolder}/watchs3/wf_native_hello/app/lua",
+                "-Force"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "compile: watchs3 calc page | 4.8.0",
+            "type": "process",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv5-sp-d16",
+                "-ffreestanding",
+                "-fno-common",
+                "-fno-builtin",
+                "-nostdlib",
+                "-fno-jump-tables",
+                "-fno-stack-protector",
+                "-fno-unwind-tables",
+                "-fno-asynchronous-unwind-tables",
+                "-fdata-sections",
+                "-fno-function-sections",
+                "-Os",
+                "-I.",
+                "-Iwatchs3",
+                "-DWATCHS3_FW_VERSION=480",
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-c",
+                "watchs3/ui/calc_page.c",
+                "-o",
+                "calc_page.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "compile: watchs3 calc page | 2.6.0",
+            "type": "process",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv5-sp-d16",
+                "-ffreestanding",
+                "-fno-common",
+                "-fno-builtin",
+                "-nostdlib",
+                "-fno-jump-tables",
+                "-fno-stack-protector",
+                "-fno-unwind-tables",
+                "-fno-asynchronous-unwind-tables",
+                "-fdata-sections",
+                "-fno-function-sections",
+                "-Os",
+                "-I.",
+                "-Iwatchs3",
+                "-DWATCHS3_FW_VERSION=260",
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-c",
+                "watchs3/ui/calc_page.c",
+                "-o",
+                "calc_page.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build: watchs3 app | 4.8.0",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "compile: watchs3 app | 4.8.0",
+                "compile: watchs3 calc page | 4.8.0",
+                "link: watchs3 app | 4.8.0",
+                "verify: no eabi imports",
+                "deploy: watchs3 app | 4.8.0"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "build: watchs3 app | 2.6.0",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "compile: watchs3 app | 2.6.0",
+                "compile: watchs3 calc page | 2.6.0",
+                "link: watchs3 app | 2.6.0",
+                "verify: no eabi imports",
+                "deploy: watchs3 app | 2.6.0"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "compile: watchs3 app | 4.8.0",
+            "type": "process",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv5-sp-d16",
+                "-ffreestanding",
+                "-fno-common",
+                "-fno-builtin",
+                "-nostdlib",
+                "-fno-jump-tables",
+                "-fno-stack-protector",
+                "-fno-unwind-tables",
+                "-fno-asynchronous-unwind-tables",
+                "-fdata-sections",
+                "-fno-function-sections",
+                "-Os",
+                "-I.",
+                "-Iwatchs3",
+                "-DWATCHS3_FW_VERSION=480",
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-c",
+                "watchs3/watchs3_app.c",
+                "-o",
+                "watchs3_app.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "compile: watchs3 app | 2.6.0",
+            "type": "process",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv5-sp-d16",
+                "-ffreestanding",
+                "-fno-common",
+                "-fno-builtin",
+                "-nostdlib",
+                "-fno-jump-tables",
+                "-fno-stack-protector",
+                "-fno-unwind-tables",
+                "-fno-asynchronous-unwind-tables",
+                "-fdata-sections",
+                "-fno-function-sections",
+                "-Os",
+                "-I.",
+                "-Iwatchs3",
+                "-DWATCHS3_FW_VERSION=260",
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-c",
+                "watchs3/watchs3_app.c",
+                "-o",
+                "watchs3_app.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "link: watchs3 app | 4.8.0",
+            "type": "process",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv5-sp-d16",
+                "-r",
+                "-T",
+                "watchs3/watchs3.ld",
+                "-o",
+                "watchs3_app_4.8.0.elf",
+                "watchs3_app.o",
+                "calc_page.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "link: watchs3 app | 2.6.0",
+            "type": "process",
+            "command": "arm-none-eabi-gcc",
+            "args": [
+                "-mcpu=cortex-m33",
+                "-mthumb",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv5-sp-d16",
+                "-r",
+                "-T",
+                "watchs3/watchs3.ld",
+                "-o",
+                "watchs3_app_2.6.0.elf",
+                "watchs3_app.o",
+                "calc_page.o"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy: watchs3 app | 4.8.0",
+            "type": "shell",
+            "command": "Copy-Item",
+            "args": [
+                "-Path",
+                "${workspaceFolder}/watchs3_app_4.8.0.elf",
+                "-Destination",
+                "${workspaceFolder}/watchs3/wf_native_calculator/app/lua",
+                "-Force"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy: watchs3 app | 2.6.0",
+            "type": "shell",
+            "command": "Copy-Item",
+            "args": [
+                "-Path",
+                "${workspaceFolder}/watchs3_app_2.6.0.elf",
+                "-Destination",
+                "${workspaceFolder}/watchs3/wf_native_calculator/app/lua",
                 "-Force"
             ],
             "problemMatcher": []

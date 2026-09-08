@@ -1,17 +1,17 @@
 /*
- * mb10p_hello.c
+ * watchs3_hello.c
  *
- * Loadable NuttX userspace module for Xiaomi Mi Band 10 Pro (mb10pro).
+ * Loadable NuttX userspace module for Xiaomi Watch S3 (watchs3).
  * Loaded at runtime via the NSH command:
  *
- *     insmod /data/mb10p_hello.elf hello_module
+ *     insmod /data/watchs3_hello.elf hello_module
  *
  * ============================================================================
  */
 
 #include <stdint.h>
 #include "common/nuttx/syslog.h"
-#include "platform/miwear_system.h"
+#include "watchs3_hello_asserts.h"
 
 static int say_hello_module(void)
 {

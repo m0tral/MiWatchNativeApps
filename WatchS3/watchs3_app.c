@@ -1,15 +1,15 @@
 /*
- * mb10p_app.c -- mb10pro example app that registers a calculator app
+ * watchs3_app.c -- watchs3 example app that registers a calculator app
  * with the package manager and hosts the reusable calculator page as
  * its main activity page.
  *
- *     insmod /data/mb10p_app.elf hello_module
+ *     insmod /data/watchs3_app.elf hello_module
  */
 
 #include <stdint.h>
 #include "common/misc/mem.h"
 #include "common/nuttx/syslog.h"
-#include "platform/miwear_system.h"
+#include "watchs3_app_asserts.h"
 #include "common/miwear/app.h"
 #include "common/miwear/watchface.h"
 #include "common/lvgl/control.h"
@@ -77,18 +77,13 @@ static miwear_app_t g_calc_app = {
     .name      = APP_NAME,
     .icon      = APP_ICON,
     .app_id    = CALC_APP_ID,
-    .flags     = 0,
-    .field_14  = 0,
-    .field_18  = 0,
-    .app_get_name = calc_app_get_name,
-    .on_uninstall = 0,
-    .field_24  = 0,
+    .field_12 = 0,
+    .get_app_name = calc_app_get_name,
+    .is_background_supported = 0,
+    .field_1C  = 0,
+    .field_20  = 0,
+    .on_app_signal = 0,
     .field_28  = 0,
-    .field_2C  = 0,
-    .field_30  = 0,
-    .field_34  = 0,
-    .on_signal = 0,
-    .field_3C  = 0,
 };
 
 static miwear_page_t g_calc_page = {
@@ -99,9 +94,8 @@ static miwear_page_t g_calc_page = {
     .flags             = 0,
     .scheduler_deadline = 0,
     .scheduler_priority = 0,
-    .async_destroy_state = 0,
     .lifecycle_state   = 0,
-    .layer             = 1,
+    .layer             = 4,
     .page_kind         = 0,
     .activity_context  = 0,
     .root_object         = 0,
@@ -132,16 +126,20 @@ static void register_app(void)
         syslog(LOG_WARN, "%s pm_app_install(%s) rc=%d\n",
             LOG_TAG, g_calc_app.name, res);
 
-        /* Add the app icon to the launcher grid. */
-        int rc = app_launcher_add(CALC_APP_ID);
-        syslog(LOG_WARN, "%s app_launcher_add rc=%d\n", LOG_TAG, rc);
+        /* Add the app icon to the launcher grid.
+        Watch S3 has no quick app engine, so behavior is different
+         */
+        lv_ll_clear(g_appinfo_list);
+        launcher_data_load_app_info();
+        launcher_page_main_update_layout();
+        syslog(LOG_WARN, "%s launcher_apps_layout_update", LOG_TAG);
 
         if (res == 0) {
             char *curr_face = g_watchface_config && g_watchface_config->current_face
                             ? g_watchface_config->current_face->id
                             : "";
 
-            syslog(LOG_WARN, "curr face: %s\n", curr_face);
+            syslog(LOG_WARN, "%s curr face: %s", LOG_TAG, curr_face);
             watchface_manager_delete_watchface(curr_face);
             watchface_manager_reset_watchface(NULL);
 
