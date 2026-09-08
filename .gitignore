@@ -5,3 +5,5 @@
 /WatchS3/wf_native_calculator/output
 /WatchS3/wf_native_calculator/app/lua/*.elf
 *.elf
+AGENTS.md
+/*.i64
