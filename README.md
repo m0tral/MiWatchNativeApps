@@ -334,7 +334,7 @@ The calculator running directly on the watch:
 * [NuttX Binary Loader](https://nuttx.apache.org/docs/latest/components/binfmt.html)
 * [NuttX `insmod`](https://nuttx.apache.org/docs/latest/applications/nsh/commands.html#insmod-install-an-os-module)
 * [NuttX Shell](https://nuttx.apache.org/docs/latest/applications/nsh/index.html)
-* [MiWatchNativeApps](https://github.com/m0tral/MiWatchNativeApps)
+* [MiWatchLuaWatchfaces](https://github.com/m0tral/MiWatchLuaWatchfaces)
 * [Easyface](https://github.com/m0tral/Easyface)
 
 ### Community
