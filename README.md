@@ -254,6 +254,7 @@ Currently implemented for:
 | ----------- | -------------- | ------------ |
 | MB10 Pro CN | 3.101.043      | 3.121.043    |
 | MB10 Pro GL | 3.201.016      | 3.221.016    |
+| Watch S3 GL | 2.6.0          | -            |
 
 The same application concept can potentially be ported to other Xiaomi devices using the same platform architecture.
 
