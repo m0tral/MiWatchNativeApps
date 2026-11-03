@@ -7,3 +7,6 @@
 *.elf
 AGENTS.md
 /*.i64
+/WatchS4/wf_native_calculator/output/
+/WatchS4/wf_native_calculator/app/lua/*.elf
+__pycache__/

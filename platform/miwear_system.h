@@ -15,6 +15,7 @@
  *
  *   -DMB10P_FW_VERSION=<int>     # mb10pro (Xiaomi Mi Band 10 Pro)
  *   -DWATCHS3_FW_VERSION=<int>   # watchs3 (Xiaomi Watch S3)
+ *   -DWATCHS4_FW_VERSION=<int>   # watchs4 (Xiaomi Watch S4)
  *
  * The model name selects a directory under platform/; the firmware integer
  * selects a per-revision header inside that directory.
@@ -30,8 +31,10 @@
 #   include "mb10p/miwear_system.h"
 #elif defined(WATCHS3_FW_VERSION)
 #   include "watchs3/miwear_system.h"
+#elif defined(WATCHS4_FW_VERSION)
+#   include "watchs4/miwear_system.h"
 #else
-#   error "platform/miwear_system.h: define MB10P_FW_VERSION or WATCHS3_FW_VERSION"
+#   error "platform/miwear_system.h: define MB10P_FW_VERSION, WATCHS3_FW_VERSION or WATCHS4_FW_VERSION"
 #endif
 
 #endif /* XIAOMI_MIWEAR_SYSTEM_H */

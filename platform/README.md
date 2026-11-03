@@ -40,6 +40,11 @@ Two `-D` flags select what gets compiled:
 | ----------------------- | ------- | --------------- |
 | `MB10P_FW_VERSION=N`    | mb10pro | `platform/mb10p/` |
 | `WATCHS3_FW_VERSION=N`  | watchs3 | `platform/watchs3/` |
+| `WATCHS4_FW_VERSION=542` | Watch S4 Global 5.4.2 | `platform/watchs4/` |
+
+Watch S4 bindings use `watchs4/fw_5.4.2/miwear_system.h` and a separate
+notification ABI in `watchs4/notification.h`. See [WatchS4](../WatchS4/README.md)
+for the port's build flags and runtime checks.
 
 Within a model, the integer picks the firmware revision:
 
