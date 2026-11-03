@@ -264,6 +264,11 @@ Currently implemented for:
 | MB10 Pro GL | 3.201.016      | 3.221.016    |
 | MB10 Pro GL | 3.201.026      | -            |
 | Watch S3 GL | 2.6.0          | -            |
+| Watch S4 GL | 5.4.2          | -            |
+
+The [Watch S4 calculator](WatchS4/README.md) uses S4-specific firmware bindings
+and the bundled EasyFace installer, with its native entry, UI, and installer
+sources under `WatchS4/`.
 
 The same application concept can potentially be ported to other Xiaomi devices using the same platform architecture.
 
